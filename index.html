@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sudoku Solver</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            margin: 0;
+        }
+
+        .sudoku-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+        }
+
+        .section {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2px;
+            padding: 5px;
+            border: 2px solid #333;
+        }
+
+        .cell {
+            width: 40px;
+            height: 40px;
+            text-align: center;
+            font-size: 18px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            outline: none;
+        }
+
+        .cell:focus {
+            border-color: #007BFF;
+        }
+
+        .solve-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .solve-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <div>
+        <div class="sudoku-container" id="sudoku-board">
+            <!-- 9 sections of Sudoku will be dynamically generated here -->
+        </div>
+        <button class="solve-btn" onclick="solveSudoku()">Solve</button>
+    </div>
+
+    <script>
+        // Generate the 9x9 grid
+        function createBoard() {
+            const board = document.getElementById('sudoku-board');
+            for (let sectionIndex = 0; sectionIndex < 9; sectionIndex++) {
+                const section = document.createElement('div');
+                section.classList.add('section');
+                for (let cellIndex = 0; cellIndex < 9; cellIndex++) {
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.classList.add('cell');
+                    input.maxLength = 1;
+                    input.id = `cell-${sectionIndex * 9 + cellIndex}`;
+                    section.appendChild(input);
+                }
+                board.appendChild(section);
+            }
+        }
+
+        // Check if the number is valid in the current row, column, and section
+        function isValid(board, row, col, num) {
+            for (let i = 0; i < 9; i++) {
+                if (board[row][i] == num || board[i][col] == num || 
+                    board[3 * Math.floor(row / 3) + Math.floor(i / 3)][3 * Math.floor(col / 3) + i % 3] == num) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        // Solve the Sudoku puzzle using backtracking
+        function solve(board) {
+            for (let row = 0; row < 9; row++) {
+                for (let col = 0; col < 9; col++) {
+                    if (board[row][col] == 0) {
+                        for (let num = 1; num <= 9; num++) {
+                            if (isValid(board, row, col, num)) {
+                                board[row][col] = num;
+                                if (solve(board)) {
+                                    return true;
+                                }
+                                board[row][col] = 0; // Backtrack
+                            }
+                        }
+                        return false; // Trigger backtracking
+                    }
+                }
+            }
+            return true;
+        }
+
+        // Get the current state of the board
+        function getBoard() {
+            const board = [];
+            for (let row = 0; row < 9; row++) {
+                const boardRow = [];
+                for (let col = 0; col < 9; col++) {
+                    const value = document.getElementById(`cell-${row * 9 + col}`).value;
+                    boardRow.push(value ? parseInt(value) : 0);
+                }
+                board.push(boardRow);
+            }
+            return board;
+        }
+
+        // Set the board with the solved values
+        function setBoard(board) {
+            for (let row = 0; row < 9; row++) {
+                for (let col = 0; col++) {
+                    document.getElementById(`cell-${row * 9 + col}`).value = board[row][col] !== 0 ? board[row][col] : '';
+                }
+            }
+        }
+
+        // Function to solve the Sudoku when the button is clicked
+        function solveSudoku() {
+            const board = getBoard();
+            if (solve(board)) {
+                setBoard(board);
+            } else {
+                alert('No solution exists for the given puzzle.');
+            }
+        }
+
+        // Initialize the board
+        createBoard();
+    </script>
+
+</body>
+</html>
