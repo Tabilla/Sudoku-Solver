@@ -136,7 +136,7 @@
         // Set the board with the solved values
         function setBoard(board) {
             for (let row = 0; row < 9; row++) {
-                for (let col = 0; col++) {
+                for (let col = 0; col < 9; col++) {
                     document.getElementById(`cell-${row * 9 + col}`).value = board[row][col] !== 0 ? board[row][col] : '';
                 }
             }
