@@ -13,12 +13,17 @@
             height: 100vh;
             background-color: #f0f0f0;
             margin: 0;
+            overflow: auto; /* Allow scrolling */
         }
 
         .sudoku-container {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 5px;
+            width: 100vw; /* Allow width to expand */
+            height: 100vh; /* Allow height to expand */
+            padding: 10px;
+            box-sizing: border-box;
         }
 
         .section {
@@ -30,10 +35,10 @@
         }
 
         .cell {
-            width: 40px;
-            height: 40px;
+            width: 60px; /* Increased size for better visibility */
+            height: 60px;
             text-align: center;
-            font-size: 18px;
+            font-size: 24px;
             border: 1px solid #ccc;
             background-color: #fff;
             outline: none;
